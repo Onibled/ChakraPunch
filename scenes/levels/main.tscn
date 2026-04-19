@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://dcpsi1wwtns1w" path="res://scenes/levels/level_meditation_training.tscn" id="9_hwp66"]
 [ext_resource type="PackedScene" uid="uid://c2fois1tjld0h" path="res://scenes/camera_dynamic.tscn" id="10_hwp66"]
 [ext_resource type="PackedScene" uid="uid://duy0t17nqbg3x" path="res://scenes/sequence_object.tscn" id="12_2xkjh"]
+[ext_resource type="PackedScene" uid="uid://d2u8ytxhurek2" path="res://scenes/moving_platform.tscn" id="13_dj21o"]
 
 [node name="Main" type="Node2D" unique_id=1275121546]
 script = ExtResource("1_o6xl0")
@@ -71,5 +72,10 @@ follow_speed = 100.0
 position = Vector2(152, 319)
 targets = [NodePath("../ChakraGenerator")]
 
-[node name="SequenceObject" parent="." unique_id=869273628 instance=ExtResource("12_2xkjh")]
+[node name="SequenceObject" parent="." unique_id=869273628 node_paths=PackedStringArray("targets") instance=ExtResource("12_2xkjh")]
 position = Vector2(548, 143)
+targets = [NodePath("../ChakraGenerator")]
+
+[node name="MovingPlatform" parent="." unique_id=1162716590 instance=ExtResource("13_dj21o")]
+position = Vector2(639, 129)
+points = Array[Vector2]([Vector2(639, 150), Vector2(600, 120), Vector2(672, 100)])

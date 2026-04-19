@@ -34,7 +34,7 @@ func spawn_projectile():
 			
 			projectile.direction = Vector2(player.facing_direction, 0)
 			projectile.global_position = player.global_position + Vector2(20 * player.facing_direction, 0)
-			projectile.owner = player
+			#projectile.owner = player
 			
 			# 👉 QUI puoi settare varianti
 			projectile.use_boomerang = false

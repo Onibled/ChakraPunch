@@ -23,9 +23,16 @@ extends Node2D
 
 @export var textures := {
 	"interact": preload("res://sprites/circle.png"),
-	"light_attack": preload("res://sprites/square.png"),
+	"light_attack": preload("res://sprites/square_mini.png"),
 	"heavy_attack": preload("res://sprites/triangle.png"),
 	"jump": preload("res://sprites/cross.png")
+}
+
+@export var textures_black := {
+	"interact": preload("res://sprites/circle_b.png"),
+	"light_attack": preload("res://sprites/square_mini_b.png"),
+	"heavy_attack": preload("res://sprites/triangle_b.png"),
+	"jump": preload("res://sprites/cross_b.png")
 }
 
 # -------------------------------------------------
@@ -37,6 +44,8 @@ var current_index := 0
 
 var player_ref: Player = null
 var was_meditating := false
+
+@export var targets: Array[Activatable] = []
 
 # -------------------------------------------------
 # 🔄 READY
@@ -56,8 +65,8 @@ func _build_visuals():
 
 		s.position = Vector2(i * spacing, 0)
 		s.scale = sprite_scale
-		s.texture = null
-		s.modulate.a = 0.2
+		s.texture = textures_black[sequence[i]]
+		#s.modulate.a = 0.2
 
 		sprites.append(s)
 
@@ -133,7 +142,7 @@ func _register(action: String):
 
 func _correct(action: String):
 	sprites[current_index].texture = textures[action]
-	sprites[current_index].modulate = Color(1, 1, 1, 1)
+	#sprites[current_index].modulate = Color(1, 1, 1, 1)
 
 	current_index += 1
 
@@ -153,6 +162,7 @@ func _wrong():
 
 func _completed():
 	print("Sequenza completata!")
+	activate_targets()
 	_reset()
 
 # -------------------------------------------------
@@ -163,5 +173,29 @@ func _reset():
 	current_index = 0
 
 	for s in sprites:
-		s.texture = null
-		s.modulate = Color(1, 1, 1, 0.2)
+		s.texture = textures_black[sequence[current_index]]
+		#s.modulate = Color(1, 1, 1, 0.2)
+		current_index += 1
+	current_index = 0
+	return
+	
+func activate_targets():
+	for target in targets:
+		if target == null:
+			continue
+
+		target.activate()
+	return
+	
+
+# -------------------------------------------------
+# 🎨 DEBUG DRAW
+# -------------------------------------------------
+
+func _draw():
+	for target in targets:
+		if target == null:
+			continue
+
+		var local_target_pos = to_local(target.global_position)
+		draw_line(Vector2.ZERO, local_target_pos, Color(0.6, 0.2, 1.0), 2.0)

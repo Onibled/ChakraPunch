@@ -74,7 +74,7 @@ func _on_area_entered(area):
 	
 	Utility.hit_impact(owner, damage, kb)
 	#Utility.camera_zoom(owner)
-	if hit_sound.stream:
+	if hit_sound != null && hit_sound.stream:
 			var snd = hit_sound.duplicate()
 			get_tree().current_scene.add_child(snd)
 			snd.global_position = global_position

@@ -219,7 +219,7 @@ func _ready():
 	emit_signal("health_changed", health_component.health)
 	return
 
-func _physics_process(delta):	
+func _physics_process(delta):
 	handle_timers(delta)
 	handle_gravity(delta)
 	handle_jump()
