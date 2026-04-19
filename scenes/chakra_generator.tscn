@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://blclu5vqn52em"]
+
+[ext_resource type="Script" uid="uid://dhrufq875tctm" path="res://scripts/chakra/chakra_generator.gd" id="1_qpn8s"]
+[ext_resource type="PackedScene" uid="uid://dl26dr6ueygsc" path="res://scenes/chakra_orb.tscn" id="2_er0lc"]
+
+[node name="ChakraGenerator" type="Node2D" unique_id=58262898]
+script = ExtResource("1_qpn8s")
+chakra_scene = ExtResource("2_er0lc")

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://1nwh36q2c8ke"]
+
+[ext_resource type="Script" uid="uid://drlkvjgngaxd6" path="res://scripts/screen_flash.gd" id="1_drvn2"]
+
+[node name="ScreenFlash" type="CanvasLayer" unique_id=615734221]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2090578240]
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(1, 1, 1, 0)
+script = ExtResource("1_drvn2")

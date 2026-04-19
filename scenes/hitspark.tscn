@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://ds7t4co3f4rsc"]
+
+[ext_resource type="Script" uid="uid://b5tijitb63ggi" path="res://scripts/hitspark.gd" id="1_feo2w"]
+
+[sub_resource type="Animation" id="Animation_ce024"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_2h61i"]
+resource_name = "impact"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.06666667, 0.8666667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_15nvx"]
+_data = {
+&"RESET": SubResource("Animation_ce024"),
+&"impact": SubResource("Animation_2h61i")
+}
+
+[node name="hitspark" type="Node2D" unique_id=2039274792]
+script = ExtResource("1_feo2w")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=747987789]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=595332083]
+libraries/ = SubResource("AnimationLibrary_15nvx")

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://c3neqv3synm5i"]
+
+[ext_resource type="Script" uid="uid://bvfk8omdewjb1" path="res://scripts/lever.gd" id="1_4kwec"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_neyqp"]
+
+[node name="Lever" type="Node2D" unique_id=202614126]
+script = ExtResource("1_4kwec")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=566618854]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=204498162]
+shape = SubResource("RectangleShape2D_neyqp")

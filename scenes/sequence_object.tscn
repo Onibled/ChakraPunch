@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://duy0t17nqbg3x"]
+
+[ext_resource type="Script" uid="uid://de8umhlkjk1c0" path="res://scripts/sequence_object.gd" id="1_hlc4n"]
+
+[node name="SequenceObject" type="Node2D" unique_id=869273628]
+script = ExtResource("1_hlc4n")
+
+[node name="IconContainer" type="Node2D" parent="." unique_id=82236583]

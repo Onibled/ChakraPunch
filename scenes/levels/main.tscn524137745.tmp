@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://d4ege83ljfnsd"]
+
+[ext_resource type="PackedScene" uid="uid://se8pv2fgkjl6" path="res://scenes/player.tscn" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://120ggr3i2bx2" path="res://scripts/scene_setup.gd" id="1_o6xl0"]
+[ext_resource type="PackedScene" uid="uid://won3m3h031dg" path="res://scenes/player_hud.tscn" id="1_tefeu"]
+[ext_resource type="PackedScene" uid="uid://doi7cos736ywn" path="res://scenes/ground.tscn" id="2_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://dndwwwh5qtabx" path="res://scenes/enemy.tscn" id="2_sugp2"]
+[ext_resource type="Script" uid="uid://bkuy4ktogw54q" path="res://scripts/camera.gd" id="4_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://dl26dr6ueygsc" path="res://scenes/chakra_orb.tscn" id="4_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://blclu5vqn52em" path="res://scenes/chakra_generator.tscn" id="7_tipki"]
+[ext_resource type="PackedScene" uid="uid://c4vmvrs45p48l" path="res://scenes/levels/scene_transition.tscn" id="8_rssyh"]
+[ext_resource type="PackedScene" uid="uid://c3neqv3synm5i" path="res://scenes/lever.tscn" id="9_85g3d"]
+[ext_resource type="PackedScene" uid="uid://dcpsi1wwtns1w" path="res://scenes/levels/level_meditation_training.tscn" id="9_hwp66"]
+
+[node name="Main" type="Node2D" unique_id=1275121546]
+script = ExtResource("1_o6xl0")
+
+[node name="PlayerHUD" parent="." unique_id=1850660296 instance=ExtResource("1_tefeu")]
+
+[node name="Player" parent="." unique_id=1445301226 instance=ExtResource("1_o5qli")]
+position = Vector2(257, 152)
+
+[node name="Enemy" parent="." unique_id=1146580129 instance=ExtResource("2_sugp2")]
+position = Vector2(763, 161)
+
+[node name="Ground" parent="." unique_id=1529709358 instance=ExtResource("2_0wfyh")]
+position = Vector2(414.00003, 362)
+scale = Vector2(26.52, 1)
+
+[node name="Ground2" parent="." unique_id=672319743 instance=ExtResource("2_0wfyh")]
+position = Vector2(847, 282.00003)
+scale = Vector2(0.7599926, 5.999999)
+
+[node name="Ground4" parent="." unique_id=790627538 instance=ExtResource("2_0wfyh")]
+position = Vector2(-23.999939, 282.00003)
+scale = Vector2(0.7599926, 5.999999)
+
+[node name="Ground3" parent="." unique_id=1203980183 instance=ExtResource("2_0wfyh")]
+position = Vector2(489.00003, 266)
+scale = Vector2(0.7599926, 2.3599997)
+
+[node name="ChackraOrb" parent="." unique_id=586476930 instance=ExtResource("4_tbgi4")]
+position = Vector2(368, 264)
+
+[node name="ChakraGenerator" parent="." unique_id=58262898 instance=ExtResource("7_tipki")]
+position = Vector2(481, 157)
+
+[node name="SceneTransition" parent="." unique_id=1672185782 instance=ExtResource("8_rssyh")]
+position = Vector2(34, 312)
+target_scene = ExtResource("9_hwp66")
+
+[node name="Camera" type="Node" parent="." unique_id=719546085]
+
+[node name="Camera2D" type="Camera2D" parent="Camera" unique_id=1601616812]
+position = Vector2(577, 323)
+script = ExtResource("4_jyhfs")
+
+[node name="Lever" parent="." unique_id=202614126 node_paths=PackedStringArray("targets") instance=ExtResource("9_85g3d")]
+position = Vector2(152, 319)
+targets = [NodePath("../ChakraGenerator")]

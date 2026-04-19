@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dl26dr6ueygsc"]
+
+[ext_resource type="Script" uid="uid://ctvtdfc5stiem" path="res://scripts/chakra/chakra_orb.gd" id="1_ga03m"]
+[ext_resource type="Texture2D" uid="uid://dhiiewfmu1b7r" path="res://sprites/square_mini.png" id="2_d5hlr"]
+[ext_resource type="AudioStream" uid="uid://dk6xj4c1n4tml" path="res://sounds/orb_absorbed.wav" id="3_i63dd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_or215"]
+
+[node name="ChakraOrb" type="Area2D" unique_id=586476930]
+scale = Vector2(0.15, 0.15)
+collision_mask = 2
+script = ExtResource("1_ga03m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=114558045]
+scale = Vector2(1.5, 1)
+shape = SubResource("CircleShape2D_or215")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=296195309]
+texture = ExtResource("2_d5hlr")
+
+[node name="MagnetSound" type="AudioStreamPlayer2D" parent="." unique_id=147964837]
+
+[node name="PickupSound" type="AudioStreamPlayer2D" parent="." unique_id=1835137622]
+stream = ExtResource("3_i63dd")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

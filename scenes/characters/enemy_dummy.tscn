@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dndwwwh5qtabx"]
+
+[ext_resource type="Script" uid="uid://de3c2hhcj224n" path="res://scripts/characters/enemy/enemy_dummy.gd" id="1_7p1mj"]
+[ext_resource type="Texture2D" uid="uid://dut47dfwecr4g" path="res://sprites/square.png" id="2_md0e3"]
+[ext_resource type="Script" uid="uid://byu7ujn4qdotg" path="res://scripts/hurtbox.gd" id="3_4ra3w"]
+[ext_resource type="PackedScene" uid="uid://dlg60gv24tjgc" path="res://scenes/characters/health_component.tscn" id="3_f0ik5"]
+[ext_resource type="Script" uid="uid://c3p1w7stsbdsx" path="res://scripts/characters/enemy/states/enemy_hit_state.gd" id="4_5uy6h"]
+[ext_resource type="Script" uid="uid://dwocepomo7iji" path="res://scripts/characters/enemy/states/enemy_state_machine.gd" id="4_md484"]
+[ext_resource type="Script" uid="uid://cleskdhtilxc4" path="res://scripts/characters/enemy/states/enemy_idle_state.gd" id="4_nenq2"]
+[ext_resource type="PackedScene" uid="uid://55muwucnx32d" path="res://scenes/health_bar.tscn" id="4_qsj1h"]
+[ext_resource type="Script" uid="uid://4oyryib6vfkf" path="res://scripts/characters/enemy/states/enemy_air_state.gd" id="5_c4w8v"]
+[ext_resource type="Script" uid="uid://dqovsacvct0v4" path="res://scripts/characters/enemy/states/enemy_wall_splat_state.gd" id="6_xwavj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4ra3w"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5uy6h"]
+
+[node name="EnemyDummy" type="CharacterBody2D" unique_id=1146580129]
+collision_layer = 2
+script = ExtResource("1_7p1mj")
+
+[node name="CollisionBox" type="CollisionShape2D" parent="." unique_id=1563800744]
+position = Vector2(0, 13)
+scale = Vector2(1.25, 0.25)
+shape = SubResource("RectangleShape2D_4ra3w")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1815852227]
+texture = ExtResource("2_md0e3")
+
+[node name="HealthComponent" parent="." unique_id=1958143690 instance=ExtResource("3_f0ik5")]
+
+[node name="HealthBar" parent="." unique_id=774478805 node_paths=PackedStringArray("health_component") instance=ExtResource("4_qsj1h")]
+position = Vector2(0, -28)
+health_component = NodePath("../HealthComponent")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=897017638]
+collision_layer = 4
+collision_mask = 8
+monitoring = false
+script = ExtResource("3_4ra3w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=635305156]
+shape = SubResource("RectangleShape2D_5uy6h")
+
+[node name="StateMachine" type="Node" parent="." unique_id=1241856949]
+script = ExtResource("4_md484")
+
+[node name="IdleState" type="Node" parent="StateMachine" unique_id=2123033269]
+script = ExtResource("4_nenq2")
+
+[node name="HitState" type="Node" parent="StateMachine" unique_id=1156461367]
+script = ExtResource("4_5uy6h")
+
+[node name="AirState" type="Node" parent="StateMachine" unique_id=1453975771]
+script = ExtResource("5_c4w8v")
+
+[node name="WallSplatState" type="Node" parent="StateMachine" unique_id=1036626677]
+script = ExtResource("6_xwavj")

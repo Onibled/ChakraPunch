@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://won3m3h031dg"]
+
+[ext_resource type="Script" uid="uid://cgdvc3u0rp5as" path="res://scripts/player_hud.gd" id="1_mlvnn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mlvnn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_or0tx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_er5qu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iraov"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qcjqi"]
+border_color = Color(0.5838034, 0.15446308, 0.9999998, 1)
+
+[node name="PlayerHUD" type="CanvasLayer" unique_id=1850660296]
+script = ExtResource("1_mlvnn")
+
+[node name="HeartsContainer" type="HBoxContainer" parent="." unique_id=1240332100]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="HeartsContainer" unique_id=681947733]
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="HeartsContainer" unique_id=10025975]
+layout_mode = 2
+
+[node name="TextureRect3" type="TextureRect" parent="HeartsContainer" unique_id=208416953]
+layout_mode = 2
+
+[node name="TextureRect4" type="TextureRect" parent="HeartsContainer" unique_id=916852392]
+layout_mode = 2
+
+[node name="TextureRect5" type="TextureRect" parent="HeartsContainer" unique_id=1332982556]
+layout_mode = 2
+
+[node name="ChackraBar" type="Control" parent="." unique_id=647667583]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 40.0
+offset_right = 40.0
+offset_bottom = 80.0
+
+[node name="Section1" type="ProgressBar" parent="ChackraBar" unique_id=758206325]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/background = SubResource("StyleBoxFlat_mlvnn")
+theme_override_styles/fill = SubResource("StyleBoxFlat_or0tx")
+show_percentage = false
+
+[node name="Section2" type="ProgressBar" parent="ChackraBar" unique_id=1164313061]
+layout_mode = 0
+offset_left = 40.0
+offset_right = 80.0
+offset_bottom = 40.0
+theme_override_styles/background = SubResource("StyleBoxFlat_er5qu")
+theme_override_styles/fill = SubResource("StyleBoxFlat_iraov")
+show_percentage = false
+
+[node name="Section3" type="ProgressBar" parent="ChackraBar" unique_id=986943646]
+layout_mode = 0
+offset_left = 80.0
+offset_right = 120.0
+offset_bottom = 40.0
+theme_override_styles/background = SubResource("StyleBoxFlat_er5qu")
+theme_override_styles/fill = SubResource("StyleBoxFlat_qcjqi")
+show_percentage = false

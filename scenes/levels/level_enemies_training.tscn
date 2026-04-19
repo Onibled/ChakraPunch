@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://dnv8yhjldt0wv"]
+
+[ext_resource type="Script" uid="uid://120ggr3i2bx2" path="res://scripts/scene_setup.gd" id="1_kmmrr"]
+[ext_resource type="PackedScene" uid="uid://won3m3h031dg" path="res://scenes/player_hud.tscn" id="2_hicgb"]
+[ext_resource type="PackedScene" uid="uid://se8pv2fgkjl6" path="res://scenes/characters/player/player.tscn" id="3_tx42q"]
+[ext_resource type="PackedScene" uid="uid://doi7cos736ywn" path="res://scenes/ground.tscn" id="4_igs0o"]
+[ext_resource type="PackedScene" uid="uid://pvjiqh7syx8u" path="res://scenes/characters/enemy_patrol.tscn" id="6_ipjkd"]
+[ext_resource type="PackedScene" uid="uid://c2fois1tjld0h" path="res://scenes/camera_dynamic.tscn" id="6_oypeo"]
+
+[node name="LevelMeditationTraining" type="Node2D" unique_id=1275121546]
+script = ExtResource("1_kmmrr")
+
+[node name="PlayerHUD" parent="." unique_id=1850660296 instance=ExtResource("2_hicgb")]
+
+[node name="Player" parent="." unique_id=1445301226 instance=ExtResource("3_tx42q")]
+position = Vector2(257, 312)
+
+[node name="Ground" parent="." unique_id=1529709358 instance=ExtResource("4_igs0o")]
+position = Vector2(414.00003, 362)
+scale = Vector2(26.52, 1)
+
+[node name="Ground2" parent="." unique_id=672319743 instance=ExtResource("4_igs0o")]
+position = Vector2(847, 282.00003)
+scale = Vector2(0.7599926, 5.999999)
+
+[node name="Ground3" parent="." unique_id=1371526839 instance=ExtResource("4_igs0o")]
+position = Vector2(-23.000002, 282.00003)
+scale = Vector2(0.7599926, 5.999999)
+
+[node name="Camera" type="Node" parent="." unique_id=719546085]
+
+[node name="CameraDynamic" parent="Camera" unique_id=691722764 instance=ExtResource("6_oypeo")]
+follow_speed = 100.0
+
+[node name="EnemyPatrol" parent="." unique_id=1146580129 instance=ExtResource("6_ipjkd")]
+position = Vector2(566, 275)

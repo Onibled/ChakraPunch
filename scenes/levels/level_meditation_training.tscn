@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://dcpsi1wwtns1w"]
+
+[ext_resource type="Script" uid="uid://120ggr3i2bx2" path="res://scripts/scene_setup.gd" id="1_1lbbj"]
+[ext_resource type="PackedScene" uid="uid://won3m3h031dg" path="res://scenes/player_hud.tscn" id="2_8t6f2"]
+[ext_resource type="PackedScene" uid="uid://se8pv2fgkjl6" path="res://scenes/characters/player/player.tscn" id="3_ynpmw"]
+[ext_resource type="PackedScene" uid="uid://doi7cos736ywn" path="res://scenes/ground.tscn" id="5_515px"]
+[ext_resource type="PackedScene" uid="uid://c2fois1tjld0h" path="res://scenes/camera_dynamic.tscn" id="6_1trn1"]
+[ext_resource type="PackedScene" uid="uid://blclu5vqn52em" path="res://scenes/chakra_generator.tscn" id="7_06oje"]
+[ext_resource type="PackedScene" uid="uid://c3neqv3synm5i" path="res://scenes/lever.tscn" id="9_0lveu"]
+
+[node name="LevelMeditationTraining" type="Node2D" unique_id=1275121546]
+script = ExtResource("1_1lbbj")
+
+[node name="PlayerHUD" parent="." unique_id=1850660296 instance=ExtResource("2_8t6f2")]
+
+[node name="Player" parent="." unique_id=1445301226 instance=ExtResource("3_ynpmw")]
+position = Vector2(257, 312)
+
+[node name="Ground" parent="." unique_id=1529709358 instance=ExtResource("5_515px")]
+position = Vector2(414.00003, 362)
+scale = Vector2(26.52, 1)
+
+[node name="Ground2" parent="." unique_id=672319743 instance=ExtResource("5_515px")]
+position = Vector2(847, 282.00003)
+scale = Vector2(0.7599926, 5.999999)
+
+[node name="Ground3" parent="." unique_id=1371526839 instance=ExtResource("5_515px")]
+position = Vector2(-23.000002, 282.00003)
+scale = Vector2(0.7599926, 5.999999)
+
+[node name="ChakraGenerator" parent="." unique_id=58262898 instance=ExtResource("7_06oje")]
+position = Vector2(481, 157)
+
+[node name="Camera" type="Node" parent="." unique_id=719546085]
+
+[node name="CameraDynamic" parent="Camera" unique_id=691722764 instance=ExtResource("6_1trn1")]
+follow_speed = 100.0
+
+[node name="Lever" parent="." unique_id=202614126 node_paths=PackedStringArray("targets") instance=ExtResource("9_0lveu")]
+position = Vector2(152, 319)
+targets = [NodePath("../ChakraGenerator")]

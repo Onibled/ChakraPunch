@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c2fois1tjld0h"]
+
+[ext_resource type="Script" uid="uid://bkuy4ktogw54q" path="res://scripts/camera_dynamic.gd" id="1_xw0p8"]
+
+[node name="CameraDynamic" type="Camera2D" unique_id=691722764]
+script = ExtResource("1_xw0p8")
+follow_speed = 50.0
+max_speed = 200.0
+look_ahead_distance = 10.0
+look_ahead_speed = 5.0

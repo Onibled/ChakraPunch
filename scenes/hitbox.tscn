@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dlabnksn188jh"]
+
+[ext_resource type="Script" uid="uid://pxfommeq7mu4" path="res://scripts/hitbox.gd" id="1_qugoh"]
+[ext_resource type="AudioStream" uid="uid://c5fgalhobpa02" path="res://sounds/hit.wav" id="2_no6bd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dqkch"]
+
+[node name="Hitbox" type="Area2D" unique_id=1427040964]
+collision_layer = 8
+collision_mask = 4
+monitoring = false
+monitorable = false
+script = ExtResource("1_qugoh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1658669963]
+scale = Vector2(2, 1.5)
+shape = SubResource("RectangleShape2D_dqkch")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=1601798457]
+stream = ExtResource("2_no6bd")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dnfy0xvq02nmq"]
+
+[ext_resource type="Script" uid="uid://f8sccjdlyaow" path="res://scripts/camera_lock_zone.gd" id="1_bekpo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iyids"]
+
+[node name="CameraLockZone" type="Area2D" unique_id=525436426]
+script = ExtResource("1_bekpo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=299321687]
+shape = SubResource("RectangleShape2D_iyids")
