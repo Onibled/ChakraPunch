@@ -2,9 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dydg2evpqdxw1" path="res://scripts/projectile.gd" id="1_c8fcr"]
 [ext_resource type="Texture2D" uid="uid://crhgmnceufycq" path="res://sprites/circle.png" id="2_q3m7n"]
-[ext_resource type="PackedScene" uid="uid://dlabnksn188jh" path="res://scenes/hitbox.tscn" id="3_softn"]
+[ext_resource type="Script" uid="uid://pxfommeq7mu4" path="res://scripts/hitbox.gd" id="3_softn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_softn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6q2a6"]
 
 [node name="Projectile" type="CharacterBody2D" unique_id=1458254303]
 script = ExtResource("1_c8fcr")
@@ -15,6 +17,12 @@ texture = ExtResource("2_q3m7n")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=67244517]
 shape = SubResource("CircleShape2D_softn")
 
-[node name="Hitbox" parent="." unique_id=1427040964 instance=ExtResource("3_softn")]
-monitoring = true
-monitorable = true
+[node name="Hitbox" type="Area2D" parent="." unique_id=1760315947]
+collision_layer = 8
+collision_mask = 4
+script = ExtResource("3_softn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=316120250]
+shape = SubResource("CircleShape2D_6q2a6")
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]

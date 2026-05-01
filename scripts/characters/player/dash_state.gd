@@ -10,7 +10,6 @@ func enter():
 
 func update(delta):
 	player.update_dash(delta)
-	player.update_dash_cooldown(delta)
 	
 	# -------------------------------------------------
 	# CANCEL (OPZIONALE)
@@ -18,8 +17,14 @@ func update(delta):
 	
 	if Input.is_action_just_pressed("light_attack"):
 		state_machine.change_state("AttackState")
+		exit()
 		return
-	
+		
+	if player.input_buffer.consume("jump"):
+		state_machine.change_state("JumpState")
+		exit()
+		return
+		
 	# -------------------------------------------------
 	# FINE DASH
 	# -------------------------------------------------

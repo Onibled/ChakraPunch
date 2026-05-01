@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://dx05m4oi7w7la" path="res://scripts/characters/enemy/states/enemy_chase_state.gd" id="12_bcsmo"]
 [ext_resource type="Script" uid="uid://teo350kat1dc" path="res://scripts/vision_area.gd" id="14_cyy1l"]
 [ext_resource type="Script" uid="uid://cc8dc0whpwerj" path="res://scripts/attack_area.gd" id="15_jq8q0"]
+[ext_resource type="AudioStream" uid="uid://c5fgalhobpa02" path="res://sounds/hit.wav" id="17_3mnyc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4ra3w"]
 
@@ -90,14 +91,18 @@ position = Vector2(26, 0)
 [node name="Hitbox" type="Area2D" parent="." unique_id=1670907714]
 scale = Vector2(2, 1)
 collision_layer = 8
-collision_mask = 4
+collision_mask = 6
 monitoring = false
 monitorable = false
 script = ExtResource("5_liafw")
+damage = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=686528179]
 scale = Vector2(1, 1.5)
 shape = SubResource("RectangleShape2D_cyy1l")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="Hitbox" unique_id=749310543]
+stream = ExtResource("17_3mnyc")
 
 [node name="VisionArea" type="Area2D" parent="." unique_id=287945964]
 collision_layer = 2

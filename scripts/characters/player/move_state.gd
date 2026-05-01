@@ -1,7 +1,6 @@
 extends StatePlayer
 
 func enter():
-	#player.anim.play("idle")
 	pass
 
 func update(delta):
@@ -15,22 +14,28 @@ func update(delta):
 	if Input.is_action_just_pressed("jump"):
 		if player.is_on_floor():
 			state_machine.change_state("JumpState")
-			return
+		else:
+			player.handle_jump()
+		return
 			
 	if Input.is_action_pressed("meditate") and player.is_on_floor():
 		state_machine.change_state("MeditateState")
+		return
+		
+	if Input.is_action_just_pressed ("dash") and player.is_on_floor():
+		state_machine.change_state("DashState")
 		return
 	
 	if not player.is_on_floor():
 		state_machine.change_state("FallState")
 		return
-	
-	if player.is_on_wall() and not player.is_on_floor():
-		state_machine.change_state("WallState")
-		return
-	
+
 	player.check_ledge()
 	if player.is_on_ledge:
 		state_machine.change_state("LedgeState")
+		return
+
+	if player.is_on_wall() and not player.is_on_floor():
+		state_machine.change_state("WallState")
 		return
 	return

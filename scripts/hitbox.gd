@@ -9,17 +9,25 @@ extends Area2D
 var attack_data := {}
 
 func _ready():
-	#area_entered.connect(_on_area_entered)
+	area_entered.connect(_on_area_entered)
 	return
 
 func start_hit():
 	monitoring = true
+	return
 
 func stop_hit():
 	monitoring = false
+	return
 
 func _on_area_entered(area):
 	var target = area.get_parent()
+	
+	while target and not target.has_method("apply_knockback") and not target.has_method("on_hit"):
+		target = target.get_parent()
+	
+	if target == owner:
+		return
 	
 	if not target.has_method("apply_knockback"):
 		return
@@ -85,3 +93,4 @@ func _on_area_entered(area):
 		area.global_position,
 		kb
 	)
+	return

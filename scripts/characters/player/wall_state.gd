@@ -5,7 +5,6 @@ func enter():
 	return
 	
 func update(delta):
-	player.handle_gravity(delta)
 	player.handle_wall_slide()
 	
 	if Input.is_action_just_pressed("jump"):
@@ -23,5 +22,4 @@ func update(delta):
 		state_machine.change_state("FallState")
 		return
 	
-	player.move_and_slide()
 	return

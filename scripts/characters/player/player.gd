@@ -27,8 +27,9 @@ var facing_direction := 1
 @export var acceleration := 1200
 @export var friction := 1000
 
-@export var jump_force := -300
+@export var jump_force := -200
 @export var gravity := 820
+@export var gravity_fall := 1220
 
 ## Miglioramenti qualità salto
 @export var coyote_time := 0.1
@@ -47,14 +48,20 @@ var jump_buffer_timer := 0.0
 
 #endregion
 
+#region COLLISIONS
+var saved_collision_position
+var saved_collision_scale
+
+var saved_hurtbox_position
+var saved_hurtbox_scale
+#endregion
+
 #region DASH
 
-@export var dash_speed := 350
-@export var dash_duration := 0.1
+@export var dash_speed := 300
 @export var dash_cooldown := 0.2
 
 var is_dashing := false
-var dash_timer := 0.0
 var dash_cooldown_timer := 0.0
 var dash_direction := 0
 
@@ -76,7 +83,7 @@ var iframe_timer := 0.0
 #region WALL
 
 ## Parametri wall interaction
-@export var wall_slide_speed := 80.0
+@export var wall_slide_speed := 60.0
 @export var wall_jump_x := 300
 @export var wall_jump_y := -420
 
@@ -176,6 +183,7 @@ signal chakra_changed(value)
 
 var can_move := true
 @export var meditate_speed_multiplier := 0.25
+@onready var state_machine: PlayerStateMachine = $StateMachine
 
 #endregion
 
@@ -195,7 +203,8 @@ var cast_data := {}
 @onready var anim = $Visuals/AnimationPlayer
 @onready var sprite = $Visuals/Sprite2D
 
-## Combat
+## Boxes
+@onready var collision_box: CollisionShape2D = $CollisionBox
 @onready var hurtbox: Area2D = $Visuals/Hurtbox
 @onready var hitbox: Area2D = $Visuals/Hitbox
 
@@ -215,30 +224,24 @@ func _ready():
 	load_state()
 	add_to_group("player")
 	
+	save_collision_state()
+	
 	health_component.died.connect(_on_died)
 	emit_signal("health_changed", health_component.health)
 	return
 
 func _physics_process(delta):
 	handle_timers(delta)
-	handle_gravity(delta)
-	handle_jump()
-	handle_wall_slide()
-	handle_iframes(delta)
-	update_dash_cooldown(delta)
-	
+	handle_input_buffer()
 	input_buffer.update(delta)
 	
+	handle_gravity(delta)
+	handle_iframes(delta)
 	handle_attacks()
 	
 	move_and_slide()
 	
-	# Gestione reset combo
-	if combo_timer > 0:
-		combo_timer -= delta
-	else:
-		combo_step = 0
-	
+	return
 
 # ---------------------------------------------------------
 # 🏃 MOVEMENT
@@ -264,16 +267,16 @@ func handle_movement(delta):
 		velocity.x = move_toward(velocity.x, dir * max_speed * speed_mult, turn_speed * delta)
 	else:
 		velocity.x = move_toward(velocity.x, dir * max_speed * speed_mult, accel * delta)
+	return
 
-	if Input.is_action_just_pressed("dash"):
-		get_node("StateMachine").change_state("DashState")
-
+func force_reset_movement_state():
+	if is_dashing:
+		end_dash()
 
 ## Esegue il Dash
 
 func start_dash():
 	is_dashing = true
-	dash_timer = dash_duration
 	
 	var dir = Input.get_axis("ui_left", "ui_right")
 	if dir == 0:
@@ -289,22 +292,29 @@ func start_dash():
 	if dash_invincible:
 		start_iframes(dash_iframe_time)
 	
-	anim.play("dash")
+	apply_dash_collision()
+	
+	anim.play("slide")
+	return
 	
 func update_dash(delta):
-	dash_timer -= delta
-	
 	velocity.x = dash_direction * dash_speed
-	velocity.y = 0
+	return
 	
-	if dash_timer <= 0:
-		is_dashing = false
+func on_dash_finished():
+	end_dash()
+	return
+	
+func end_dash():
+	if not is_dashing:
+		return
+		
+	is_dashing = false
+	restore_collision_state()
+	return
 	
 func can_dash() -> bool:
 	return dash_cooldown_timer <= 0 and not is_dashing
-	
-func update_dash_cooldown(delta):
-	dash_cooldown_timer = max(dash_cooldown_timer - delta, 0)
 
 func handle_air_control(delta):
 	if is_on_floor():
@@ -314,6 +324,7 @@ func handle_air_control(delta):
 	
 	# controllo più preciso in aria
 	velocity.x = move_toward(velocity.x, dir * max_speed, air_acceleration * delta)
+	return
 	
 func try_dash_cancel() -> bool:
 	if not dash_cancel_enabled:
@@ -327,10 +338,36 @@ func try_dash_cancel() -> bool:
 
 	
 	if input_buffer.consume("dash"):
-		get_node("StateMachine").change_state("DashState")
+		state_machine.change_state("DashState")
 		return true
 	
 	return false
+	
+	
+# COLLISIONS
+
+func save_collision_state():
+	saved_collision_position = collision_box.position
+	saved_collision_scale = collision_box.scale
+	
+	saved_hurtbox_position = hurtbox.position
+	saved_hurtbox_scale = hurtbox.scale
+	return
+	
+func apply_dash_collision():
+	collision_box.scale = Vector2(0.52, 0.2)  # esempio più basso
+	collision_box.position = Vector2(-2.5, 24.5)
+	
+	hurtbox.scale = Vector2(0.8, 0.5)
+	return
+	
+func restore_collision_state():
+	collision_box.position = saved_collision_position
+	collision_box.scale = saved_collision_scale
+	
+	hurtbox.position = saved_hurtbox_position
+	hurtbox.scale = saved_hurtbox_scale
+	return
 	
 # ---------------------------------------------------------
 # I-FRAMES
@@ -350,22 +387,29 @@ func handle_iframes(delta):
 	if iframe_timer <= 0:
 		is_invincible = false
 		hurtbox.monitoring = true
-		
+	return
+
 # ---------------------------------------------------------
 # 🌍 GRAVITY
 # ---------------------------------------------------------
 
 func handle_gravity(delta):
-	if not is_on_floor():
-		velocity.y += gravity * delta
+	if not is_on_floor() && !state_machine.current_state.name == "LedgeState":
+		if velocity.y <= 0:
+			velocity.y += gravity * delta
+		else:
+			velocity.y += gravity_fall * delta
 		velocity.y = min(velocity.y, max_fall_speed)
+	return
 
 # ---------------------------------------------------------
 # 🪂 JUMP SYSTEM
 # ---------------------------------------------------------
 
-## Gestione buffer input + coyote time
+## Gestione timers + buffer input + coyote time
 func handle_timers(delta):
+	dash_cooldown_timer = max(dash_cooldown_timer - delta, 0)
+	
 	if is_on_floor():
 		coyote_timer = coyote_time
 	else:
@@ -378,6 +422,9 @@ func handle_timers(delta):
 		
 	ledge_timer = max(ledge_timer - delta, 0)
 	
+	return
+	
+func handle_input_buffer():
 	if Input.is_action_just_pressed("light_attack"):
 		input_buffer.add_input("light")
 
@@ -386,6 +433,12 @@ func handle_timers(delta):
 		
 	if Input.is_action_just_pressed("dash"):
 		input_buffer.add_input("dash")
+
+	if Input.is_action_just_pressed("jump"):
+		input_buffer.add_input("jump")
+		
+	return
+
 
 ## Logica salto (terra + muro)
 func handle_jump():
@@ -410,10 +463,12 @@ func handle_jump():
 	# Salto variabile (taglio altezza)
 	if Input.is_action_just_released("jump") and velocity.y < 0:
 		velocity.y *= 0.5
+	return
 
 func reset_jump():
 	jump_buffer_timer = 0
 	coyote_timer = 0
+	return
 
 # ---------------------------------------------------------
 # 🧗 WALL
@@ -425,6 +480,7 @@ func handle_wall_slide():
 	if is_on_wall() and not is_on_floor() and velocity.y > 0:
 		is_wall_sliding = true
 		velocity.y = min(velocity.y, wall_slide_speed)
+	return
 
 # ---------------------------------------------------------
 # ⚔️ COMBAT INPUT
@@ -438,12 +494,12 @@ func handle_attacks() -> void:
 	
 	if Input.is_action_just_pressed("light_attack"):
 		attack_type = "launcher" if up_pressed else "light"
-		get_node("StateMachine").change_state("AttackState")
+		state_machine.change_state("AttackState")
 		
 	if Input.is_action_just_pressed("heavy_attack"):
 		attack_type = "heavy"
-		get_node("StateMachine").change_state("AttackState")
-	
+		state_machine.change_state("AttackState")
+	return
 # ---------------------------------------------------------
 # 🧗 LEDGE SYSTEM
 # ---------------------------------------------------------
@@ -458,10 +514,12 @@ func check_ledge():
 	
 	if not top and bottom and velocity.y > 50:
 		grab_ledge()
+	return
 
 func grab_ledge():
 	is_on_ledge = true
 	velocity = Vector2.ZERO
+	return
 	
 func handle_ledge():
 	velocity = Vector2.ZERO
@@ -477,24 +535,28 @@ func handle_ledge():
 	# SALTO DA LEDGE
 	if Input.is_action_just_pressed("ui_left") or Input.is_action_just_pressed("ui_right"):
 		jump_from_ledge()
-		
+	return
+
 func climb_ledge():
 	is_on_ledge = false
 	
 	# teletrasporto sopra il bordo
 	global_position.y -= 30
 	global_position.x += 10 * facing_direction
-	
+	return
+
 func drop_ledge():
 	is_on_ledge = false
 	velocity.y = 50
 	ledge_timer = ledge_cooldown
+	return
 	
 func jump_from_ledge():
 	is_on_ledge = false
 	velocity.y = jump_force
 	velocity.x = -sign(ledge_check_bottom.get_collision_normal().x) * wall_jump_x
 	ledge_timer = ledge_cooldown
+	return
 	
 # -------------------
 # COMBAT
@@ -504,11 +566,43 @@ func apply_knockback(dmg, kb, attack_data := {}):
 	if is_invincible:
 		return
 		
+	force_reset_movement_state()
+		
 	health_component.damage(dmg)
+	emit_signal("health_changed", health_component.health)
 	
+	var reaction = attack_data.get("reaction", "stagger")
+	
+	match reaction:
+		"stagger":
+			start_stagger(kb)
+		
+		"knockback":
+			start_knockback(kb)
+		
+		"launch":
+			start_launch(kb)
+		
+		_:
+			start_stagger(kb)
+	return
+	
+func start_stagger(kb: Vector2):
+	velocity = kb * 0.3  # pochissimo movimento
+	
+	state_machine.change_state("StaggerState")
+	return
+
+func start_knockback(kb: Vector2):
 	velocity = kb
-	get_node("StateMachine").change_state("KnockbackState")
-	
+	state_machine.change_state("KnockbackState")
+	return
+
+func start_launch(kb: Vector2):
+	velocity = kb
+	state_machine.change_state("AirHitState")
+	return
+
 # -------------------
 # CHAKRA SYSTEM
 # -------------------
@@ -516,24 +610,29 @@ func apply_knockback(dmg, kb, attack_data := {}):
 func add_chakra(value: int):
 	chakra = clamp(chakra + value, 0, max_chakra)
 	emit_signal("chakra_changed", chakra)
+	return
 
 # -------------------
 # SPECIAL ATTACKS
 # -------------------
 
-
 func attack_speed_buff():
 	print("Buff velocità attacco attivo!")
+	return
 	
 func _on_damaged(dmg, kb):
 	print("Preso danno:", dmg)
 	velocity += kb
+	return
 	
 func set_combo_target(target):
-	combo_target = target
+	if target is CharacterBody2D:
+		combo_target = target
+	return
 	
 func clear_combo_target():
 	set_combo_target(null)
+	return
 	
 func handle_combo_follow(delta):
 	if combo_target == null:
@@ -582,7 +681,7 @@ func handle_air_combo_control(delta):
 		
 func register_hit():
 	has_hit = true
-	
+	return
 	
 # ---------------------------------------------------------
 # 🎬 ANIMATION CALLBACKS
@@ -590,36 +689,39 @@ func register_hit():
 
 func _on_animation_player_animation_finished(anim_name):
 	if anim_name == null:
-		$StateMachine.change_state("MoveState")
+		state_machine.change_state("MoveState")
 		return
 		
 	if anim_name.begins_with("attack"):
 		combo_timer = combo_window
 		if is_on_floor():
-			$StateMachine.change_state("MoveState")
+			state_machine.change_state("MoveState")
 		else:
-			$StateMachine.change_state("FallState")
-
+			state_machine.change_state("FallState")
+	return
+	
 ## Abilita cancel window (chiamato da AnimationPlayer)
 func enable_cancel():
-	$StateMachine.current_state.can_cancel = true
+	state_machine.current_state.can_cancel = true
+	return
 
 ## Disabilita cancel window
 func disable_cancel():
-	$StateMachine.current_state.can_cancel = false
-	
+	state_machine.current_state.can_cancel = false
+	return
 	
 func save_state():
 	GameState.player_health = health_component.health
 	GameState.player_chakra = chakra
+	return
 
 func load_state():
 	health_component.set_health(GameState.player_health)
 	chakra = GameState.player_chakra
-	
-		
+	return
+
 func _on_died():
 	print("Player morto")
 	
 	# esempio con checkpoint
-	Utility.change_scene(load(GameState.last_scene))
+	#Utility.change_scene(load(GameState.last_scene))

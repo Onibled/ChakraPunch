@@ -13,6 +13,7 @@ monitorable = false
 script = ExtResource("1_qugoh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1658669963]
+scale = Vector2(2, 1.5)
 shape = SubResource("RectangleShape2D_dqkch")
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=1601798457]

@@ -52,6 +52,14 @@ func _physics_process(delta):
 		if sign(last_velocity_x) == -wall_dir:
 			get_node("StateMachine").change_state("WallSplatState")
 			return
+			
+		for i in range(get_slide_collision_count()):
+			var collision = get_slide_collision(i)
+			var collider = collision.get_collider()
+			
+			if collider and collider.has_method("on_body_slam"):
+				var impact_force = abs(velocity.x)
+				collider.on_body_slam(self, impact_force)
 		
 
 func spawn_chakra(dmg, kb: Vector2):

@@ -1,5 +1,6 @@
 extends Node
-
+class_name PlayerStateMachine
+ 
 var current_state
 var states = {}
 
@@ -12,6 +13,9 @@ func _ready():
 	change_state("MoveState")
 
 func change_state(state_name):
+	if owner.has_method("force_reset_movement_state"):
+		owner.force_reset_movement_state()
+
 	if current_state:
 		current_state.exit()
 	

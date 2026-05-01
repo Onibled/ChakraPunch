@@ -1,3 +1,4 @@
+@tool
 extends Node2D
 
 # -------------------------------------------------
@@ -75,6 +76,10 @@ func _build_visuals():
 # -------------------------------------------------
 
 func _process(delta):
+	if Engine.is_editor_hint():
+		queue_redraw()
+		return
+		
 	_find_player()
 
 	if player_ref == null:
@@ -193,9 +198,16 @@ func activate_targets():
 # -------------------------------------------------
 
 func _draw():
+	if targets == null:
+		return
+		
 	for target in targets:
 		if target == null:
 			continue
+			
+		if not is_instance_valid(target):
+			continue
 
 		var local_target_pos = to_local(target.global_position)
-		draw_line(Vector2.ZERO, local_target_pos, Color(0.6, 0.2, 1.0), 2.0)
+		draw_line(Vector2.ZERO, local_target_pos, Color(0.8, 0.3, 1.0), 3.0)
+		draw_circle(local_target_pos, 6, Color(1, 0.5, 1))

@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://b8h1esjy7hfqm"]
+
+[ext_resource type="Script" uid="uid://cr3sbbjif7e51" path="res://scripts/spike.gd" id="1_ljd5v"]
+[ext_resource type="Texture2D" uid="uid://defvtf1epsh3d" path="res://sprites/spike_r.png" id="2_7a7y0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7a7y0"]
+size = Vector2(28, 12.333334)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ljd5v"]
+
+[node name="Spike" type="StaticBody2D" unique_id=296523478]
+script = ExtResource("1_ljd5v")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=725825092]
+position = Vector2(-4.7683716e-07, 9.166667)
+shape = SubResource("RectangleShape2D_7a7y0")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=425519612]
+position = Vector2(0, 9)
+scale = Vector2(1.430001, -0.6429696)
+collision_layer = 8
+collision_mask = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=2048012253]
+shape = SubResource("RectangleShape2D_ljd5v")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1604134738]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_7a7y0")

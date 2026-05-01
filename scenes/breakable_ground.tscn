@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://dvr37lyum7ndb"]
+
+[ext_resource type="Script" uid="uid://nvne44jeqdcc" path="res://scripts/breakable_ground.gd" id="1_x0tot"]
+[ext_resource type="Texture2D" uid="uid://dut47dfwecr4g" path="res://sprites/square.png" id="2_mwrdw"]
+[ext_resource type="Script" uid="uid://byu7ujn4qdotg" path="res://scripts/hurtbox.gd" id="3_5n8xg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5n8xg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_av0qe"]
+size = Vector2(21.333334, 21.333334)
+
+[node name="BreakableGround" type="StaticBody2D" unique_id=1534826589]
+script = ExtResource("1_x0tot")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=266943963]
+texture = ExtResource("2_mwrdw")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1275003179]
+collision_layer = 4
+collision_mask = 8
+monitoring = false
+script = ExtResource("3_5n8xg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=625177450]
+shape = SubResource("RectangleShape2D_5n8xg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=910756049]
+position = Vector2(-7.1525574e-07, -7.1525574e-07)
+scale = Vector2(1.5, 1.5)
+shape = SubResource("RectangleShape2D_av0qe")
