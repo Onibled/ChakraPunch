@@ -442,7 +442,6 @@ func handle_input_buffer():
 		
 	return
 
-
 ## Logica salto (terra + muro)
 func handle_jump():
 	if is_on_ledge || meditating:
@@ -728,3 +727,4 @@ func _on_died():
 	
 	# esempio con checkpoint
 	#Utility.change_scene(load(GameState.last_scene))
+	return
