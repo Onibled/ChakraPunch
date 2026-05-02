@@ -94,7 +94,8 @@ func update(delta):
 				return
 				
 		if Input.is_action_pressed("meditate") and player.is_on_floor():
-			if current_attack_data.get("dash_cancel", true) and player.has_hit:
+			#if current_attack_data.get("dash_cancel", true) and player.has_hit:
+			if player.has_hit:
 				state_machine.change_state("MeditateState")
 				return
 		

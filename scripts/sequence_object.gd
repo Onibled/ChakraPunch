@@ -168,7 +168,7 @@ func _wrong():
 func _completed():
 	print("Sequenza completata!")
 	activate_targets()
-	_reset()
+	#_reset()
 
 # -------------------------------------------------
 # 🔄 RESET
