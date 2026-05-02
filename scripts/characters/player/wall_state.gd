@@ -7,7 +7,7 @@ func enter():
 func update(delta):
 	player.handle_wall_slide()
 	
-	if Input.is_action_just_pressed("jump"):
+	if player.input_buffer.consume("jump"):
 		var dir = player.get_wall_normal().x
 		player.velocity.x = dir * player.wall_jump_x
 		player.velocity.y = player.wall_jump_y

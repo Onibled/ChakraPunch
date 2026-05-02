@@ -11,7 +11,7 @@ func update(delta):
 	else:
 		player.anim.play("idle")
 	
-	if Input.is_action_just_pressed("jump"):
+	if player.input_buffer.consume("jump"):
 		if player.is_on_floor():
 			state_machine.change_state("JumpState")
 		else:
@@ -22,7 +22,7 @@ func update(delta):
 		state_machine.change_state("MeditateState")
 		return
 		
-	if Input.is_action_just_pressed ("dash") and player.is_on_floor():
+	if player.input_buffer.consume("dash") and player.is_on_floor():
 		state_machine.change_state("DashState")
 		return
 	

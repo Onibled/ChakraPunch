@@ -15,7 +15,7 @@ func update(delta):
 	# CANCEL (OPZIONALE)
 	# -------------------------------------------------
 	
-	if Input.is_action_just_pressed("light_attack"):
+	if player.input_buffer.consume("light_attack"):
 		state_machine.change_state("AttackState")
 		exit()
 		return

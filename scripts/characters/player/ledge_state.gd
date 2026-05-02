@@ -8,7 +8,7 @@ func enter():
 func update(delta):
 	player.velocity = Vector2.ZERO
 	
-	if Input.is_action_just_pressed("jump"):
+	if player.input_buffer.consume("jump"):
 		player.climb_ledge()
 		state_machine.change_state("MoveState")
 		return

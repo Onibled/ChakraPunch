@@ -415,7 +415,7 @@ func handle_timers(delta):
 	else:
 		coyote_timer = max(coyote_timer - delta, 0)
 
-	if Input.is_action_just_pressed("jump"):
+	if input_buffer.consume("jump"):
 		jump_buffer_timer = jump_buffer_time
 	else:
 		jump_buffer_timer = max(jump_buffer_timer - delta, 0)
@@ -426,16 +426,19 @@ func handle_timers(delta):
 	
 func handle_input_buffer():
 	if Input.is_action_just_pressed("light_attack"):
-		input_buffer.add_input("light")
+		input_buffer.add_input("light_attack")
 
 	if Input.is_action_just_pressed("heavy_attack"):
-		input_buffer.add_input("heavy")
+		input_buffer.add_input("heavy_attack")
 		
 	if Input.is_action_just_pressed("dash"):
 		input_buffer.add_input("dash")
 
 	if Input.is_action_just_pressed("jump"):
 		input_buffer.add_input("jump")
+		
+	if Input.is_action_just_pressed("interact"):
+		input_buffer.add_input("interact")
 		
 	return
 
@@ -492,11 +495,11 @@ func handle_attacks() -> void:
 		
 	var up_pressed = Input.is_action_pressed("ui_up")
 	
-	if Input.is_action_just_pressed("light_attack"):
+	if input_buffer.consume("light_attack"):
 		attack_type = "launcher" if up_pressed else "light"
 		state_machine.change_state("AttackState")
 		
-	if Input.is_action_just_pressed("heavy_attack"):
+	if input_buffer.consume("heavy_attack"):
 		attack_type = "heavy"
 		state_machine.change_state("AttackState")
 	return
@@ -525,7 +528,7 @@ func handle_ledge():
 	velocity = Vector2.ZERO
 	
 	# SALI
-	if Input.is_action_just_pressed("jump"):
+	if input_buffer.consume("jump"):
 		climb_ledge()
 	
 	# LASCIA

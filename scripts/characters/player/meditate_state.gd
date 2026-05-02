@@ -71,7 +71,7 @@ func update(delta):
 		return
 	
 	# ⚡ DASH CANCEL
-	if Input.is_action_just_pressed("dash") and player.can_dash():
+	if player.input_buffer.consume("dash") and player.can_dash():
 		state_machine.change_state("DashState")
 		return
 	
@@ -92,7 +92,7 @@ func update(delta):
 
 func handle_inputs():
 	for action in input_map.keys():
-		if Input.is_action_just_pressed(action):
+		if player.input_buffer.consume(action):
 			input_sequence.append(action)
 			on_symbol_input(input_map[action])
 	
@@ -149,21 +149,21 @@ func resolve_sequence():
 # -------------------------------------------------
 
 func interpret_sequence(seq: Array):
-	
+	var last_3_seq = seq.slice(seq.size() - 3, seq.size())
 	# 🔥 PROIETTILE
-	if seq == ["light_attack", "heavy_attack", "interact"]:
+	if last_3_seq == ["light_attack", "heavy_attack", "interact"]:
 		return "projectile"
 	
 	# 🌊 ONDA
-	if seq == ["expansion", "impulse", "expansion"]:
+	if last_3_seq == ["expansion", "impulse", "expansion"]:
 		return "wave"
 	
 	# ⬆️ LAUNCHER
-	if seq == ["stability", "impulse"]:
+	if last_3_seq == ["stability", "impulse"]:
 		return "launcher"
 	
 	# ⚡ DASH ATTACK
-	if seq == ["connection", "impulse"]:
+	if last_3_seq == ["connection", "impulse"]:
 		return "dash_attack"
 	
 	return null
