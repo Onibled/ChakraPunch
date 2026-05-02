@@ -238,3 +238,7 @@ static func resume_time():
 static func resume_time_smooth(node: Node, duration := 0.1):
 	var tween = node.create_tween()
 	tween.tween_property(Engine, "time_scale", 1.0, duration)
+	
+static func toggle_pause(node: Node):
+	var tree = node.get_tree()
+	tree.paused = not tree.paused

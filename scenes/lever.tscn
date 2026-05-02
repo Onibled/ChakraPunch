@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c3neqv3synm5i"]
 
 [ext_resource type="Script" uid="uid://bvfk8omdewjb1" path="res://scripts/lever.gd" id="1_4kwec"]
+[ext_resource type="Texture2D" uid="uid://du6d8qte5lpy1" path="res://sprites/switch_off.png" id="2_ncfea"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_neyqp"]
 
@@ -13,3 +14,6 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=204498162]
 shape = SubResource("RectangleShape2D_neyqp")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1705399790]
+texture = ExtResource("2_ncfea")

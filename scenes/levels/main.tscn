@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://won3m3h031dg" path="res://scenes/player_hud.tscn" id="1_tefeu"]
 [ext_resource type="PackedScene" uid="uid://doi7cos736ywn" path="res://scenes/ground.tscn" id="2_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://dndwwwh5qtabx" path="res://scenes/characters/enemy_dummy.tscn" id="2_sugp2"]
+[ext_resource type="PackedScene" uid="uid://dv622mahsep4m" path="res://scenes/Menu/pause_menu.tscn" id="2_sv52t"]
 [ext_resource type="PackedScene" uid="uid://dl26dr6ueygsc" path="res://scenes/chakra_orb.tscn" id="4_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://blclu5vqn52em" path="res://scenes/chakra_generator.tscn" id="7_tipki"]
 [ext_resource type="PackedScene" uid="uid://c4vmvrs45p48l" path="res://scenes/levels/scene_transition.tscn" id="8_rssyh"]
@@ -14,11 +15,14 @@
 [ext_resource type="PackedScene" uid="uid://duy0t17nqbg3x" path="res://scenes/sequence_object.tscn" id="12_2xkjh"]
 [ext_resource type="PackedScene" uid="uid://dvr37lyum7ndb" path="res://scenes/breakable_ground.tscn" id="13_dj21o"]
 [ext_resource type="PackedScene" uid="uid://b8h1esjy7hfqm" path="res://scenes/spike.tscn" id="14_6ui35"]
+[ext_resource type="PackedScene" uid="uid://cbcgnjt2oiol0" path="res://scenes/activatable_moving_platform.tscn" id="16_sv52t"]
 
 [node name="Main" type="Node2D" unique_id=1275121546]
 script = ExtResource("1_o6xl0")
 
 [node name="PlayerHUD" parent="." unique_id=1850660296 instance=ExtResource("1_tefeu")]
+
+[node name="PauseMenu" parent="." unique_id=1616000135 instance=ExtResource("2_sv52t")]
 
 [node name="Player" parent="." unique_id=1445301226 instance=ExtResource("1_o5qli")]
 position = Vector2(257, 152)
@@ -82,3 +86,15 @@ position = Vector2(375, 307)
 
 [node name="Spike" parent="." unique_id=296523478 instance=ExtResource("14_6ui35")]
 position = Vector2(186, 327)
+
+[node name="ActivatableMovingPlatform" parent="." unique_id=1269360206 instance=ExtResource("16_sv52t")]
+position = Vector2(710, 236)
+active = false
+points = Array[Vector2]([Vector2(710, 246), Vector2(710, 156)])
+
+[node name="ActivatableMovingPlatform2" parent="." unique_id=677332309 instance=ExtResource("16_sv52t")]
+position = Vector2(491, 314)
+scale = Vector2(1, 2)
+active = false
+loop_mode = 0
+points = Array[Vector2]([Vector2(490, 314), Vector2(490, 254)])

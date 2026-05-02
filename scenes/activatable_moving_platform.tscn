@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cbcgnjt2oiol0"]
+
+[ext_resource type="Script" uid="uid://c0qap00fkiiq7" path="res://scripts/activatable_moving_platform.gd" id="1_i7ufn"]
+[ext_resource type="PackedScene" uid="uid://d2u8ytxhurek2" path="res://scenes/moving_platform.tscn" id="1_t0sxc"]
+[ext_resource type="PackedScene" uid="uid://duy0t17nqbg3x" path="res://scenes/sequence_object.tscn" id="2_i7ufn"]
+
+[node name="ActivatableMovingPlatform" type="Node2D" unique_id=1269360206]
+script = ExtResource("1_i7ufn")
+
+[node name="MovingPlatform" parent="." unique_id=1162716590 instance=ExtResource("1_t0sxc")]
+collision_mask = 0
+
+[node name="SequenceObject" parent="MovingPlatform" unique_id=869273628 node_paths=PackedStringArray("targets") instance=ExtResource("2_i7ufn")]
+position = Vector2(0, -32)
+sequence_length = 2
+sequence = ["interact", "jump"]
+targets = [NodePath("../..")]

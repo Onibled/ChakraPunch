@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://t40ubyhx7uke"]
+
+[ext_resource type="Script" uid="uid://di2dsvnyduqym" path="res://scripts/Menu/settings.gd" id="1_sogl8"]
+
+[node name="Settings" type="Control" unique_id=2054331222]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_sogl8")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=2055105747]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=866757436]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer" unique_id=893855806]
+layout_mode = 2
+text = "Settings"
+
+[node name="Resolution" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=600537782]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/Resolution" unique_id=951370967]
+layout_mode = 2
+text = "Resolutions"
+
+[node name="OptionButton" type="OptionButton" parent="CenterContainer/VBoxContainer/Resolution" unique_id=615606612]
+layout_mode = 2
+
+[node name="Fullscreen" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=1558755018]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/Fullscreen" unique_id=1197934950]
+layout_mode = 2
+text = "Fullscreen"
+
+[node name="CheckBox" type="CheckBox" parent="CenterContainer/VBoxContainer/Fullscreen" unique_id=1968831371]
+layout_mode = 2
+
+[node name="VSync" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=1458153670]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/VSync" unique_id=120094296]
+layout_mode = 2
+text = "VSync"
+
+[node name="CheckBox" type="CheckBox" parent="CenterContainer/VBoxContainer/VSync" unique_id=1856190461]
+layout_mode = 2
+
+[node name="Volume" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=727970464]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/Volume" unique_id=1708944244]
+layout_mode = 2
+text = "Volume"
+
+[node name="HSlider" type="HSlider" parent="CenterContainer/VBoxContainer/Volume" unique_id=727293371]
+layout_mode = 2
+
+[node name="Back" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1220992781]
+layout_mode = 2
+text = "Back"
