@@ -358,7 +358,8 @@ func apply_dash_collision():
 	collision_box.scale = Vector2(0.52, 0.2)  # esempio più basso
 	collision_box.position = Vector2(-2.5, 24.5)
 	
-	hurtbox.scale = Vector2(0.8, 0.5)
+	hurtbox.scale = Vector2(0.8, 0.2)
+	hurtbox.position = Vector2(0, 27)
 	return
 	
 func restore_collision_state():

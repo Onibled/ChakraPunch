@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dv622mahsep4m"]
 
-[ext_resource type="Script" uid="uid://bwod5dknt7ni4" path="res://scripts/Menu/pause_menu.gd" id="1_1npuy"]
+[ext_resource type="Script" uid="uid://bwod5dknt7ni4" path="res://scripts/menu/pause_menu.gd" id="1_1npuy"]
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=1616000135]
 process_mode = 3
@@ -25,6 +25,6 @@ text = "Load"
 layout_mode = 2
 text = "Settings"
 
-[node name="Quit" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1194143029]
+[node name="MainMenu" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1194143029]
 layout_mode = 2
-text = "Quit"
+text = "Main Menu"

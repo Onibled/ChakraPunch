@@ -23,7 +23,13 @@ func _ready():
 	fullscreen_toggle.toggled.connect(_on_fullscreen_toggled)
 	vsync_toggle.toggled.connect(_on_vsync_toggled)
 	volume_slider.value_changed.connect(_on_volume_changed)
+	volume_slider.focus_mode = Control.FOCUS_ALL
 	back_button.pressed.connect(_on_back_pressed)
+	return
+	
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
+		_on_back_pressed()
 	return
 	
 func save_settings():

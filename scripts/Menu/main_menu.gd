@@ -12,15 +12,18 @@ func _ready():
 	btn_settings.pressed.connect(_on_settings)
 	btn_credits.pressed.connect(_on_credits)
 	btn_exit.pressed.connect(_on_exit)
+	
+	btn_new.grab_focus()
 
 	check_save()
+	return
 
 # -------------------------------------------------
 # 🎮 AZIONI
 # -------------------------------------------------
 
 func _on_new_game():
-	get_tree().change_scene_to_file("res://scenes/levels/main.tscn")
+	get_tree().change_scene_to_file("res://scenes/level_select.tscn")
 
 func _on_continue():
 	load_game()
