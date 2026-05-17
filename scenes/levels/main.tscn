@@ -56,16 +56,20 @@ position = Vector2(-23.999939, 282.00003)
 scale = Vector2(0.7599926, 5.999999)
 
 [node name="Ground5" parent="." unique_id=1299763973 instance=ExtResource("2_0wfyh")]
-position = Vector2(92, 275)
+position = Vector2(5, 302)
 
 [node name="ChackraOrb" parent="." unique_id=586476930 instance=ExtResource("4_tbgi4")]
 position = Vector2(368, 264)
 
 [node name="ChakraGenerator" parent="." unique_id=58262898 instance=ExtResource("7_tipki")]
-position = Vector2(481, 157)
+position = Vector2(256, 251)
+
+[node name="SequenceObject" parent="ChakraGenerator" unique_id=869273628 node_paths=PackedStringArray("targets") instance=ExtResource("12_2xkjh")]
+position = Vector2(67, -14)
+targets = [NodePath("..")]
 
 [node name="SceneTransition" parent="." unique_id=1672185782 instance=ExtResource("8_rssyh")]
-position = Vector2(34, 312)
+position = Vector2(6, 263)
 target_scene = ExtResource("9_hwp66")
 
 [node name="Camera" type="Node" parent="." unique_id=719546085]
@@ -74,18 +78,15 @@ target_scene = ExtResource("9_hwp66")
 follow_speed = 100.0
 
 [node name="Lever" parent="." unique_id=202614126 node_paths=PackedStringArray("targets") instance=ExtResource("9_85g3d")]
-position = Vector2(152, 319)
-targets = [NodePath("../ChakraGenerator")]
-
-[node name="SequenceObject" parent="." unique_id=869273628 node_paths=PackedStringArray("targets") instance=ExtResource("12_2xkjh")]
-position = Vector2(548, 143)
+position = Vector2(82, 317)
 targets = [NodePath("../ChakraGenerator")]
 
 [node name="BreakableGround" parent="." unique_id=569648814 instance=ExtResource("13_dj21o")]
-position = Vector2(375, 307)
+position = Vector2(374, 314)
+scale = Vector2(1, 2)
 
 [node name="Spike" parent="." unique_id=296523478 instance=ExtResource("14_6ui35")]
-position = Vector2(186, 327)
+position = Vector2(142, 327)
 
 [node name="ActivatableMovingPlatform" parent="." unique_id=1269360206 instance=ExtResource("16_sv52t")]
 position = Vector2(710, 236)
@@ -97,4 +98,4 @@ position = Vector2(491, 314)
 scale = Vector2(1, 2)
 active = false
 loop_mode = 0
-points = Array[Vector2]([Vector2(490, 314), Vector2(490, 254)])
+points = Array[Vector2]([Vector2(490, 254)])

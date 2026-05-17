@@ -50,6 +50,11 @@ theme_override_styles/background = SubResource("StyleBoxFlat_mlvnn")
 theme_override_styles/fill = SubResource("StyleBoxFlat_or0tx")
 show_percentage = false
 
+[node name="Line1" type="Line2D" parent="ChackraBar" unique_id=456674110]
+position = Vector2(39, -1)
+points = PackedVector2Array(1, -2, 1, 44)
+width = 1.0
+
 [node name="Section2" type="ProgressBar" parent="ChackraBar" unique_id=1164313061]
 layout_mode = 0
 offset_left = 40.0
@@ -58,6 +63,11 @@ offset_bottom = 40.0
 theme_override_styles/background = SubResource("StyleBoxFlat_er5qu")
 theme_override_styles/fill = SubResource("StyleBoxFlat_iraov")
 show_percentage = false
+
+[node name="Line2" type="Line2D" parent="ChackraBar" unique_id=1880343977]
+position = Vector2(79, -1)
+points = PackedVector2Array(1, -2, 1, 44)
+width = 1.0
 
 [node name="Section3" type="ProgressBar" parent="ChackraBar" unique_id=986943646]
 layout_mode = 0

@@ -150,21 +150,25 @@ func resolve_sequence():
 
 func interpret_sequence(seq: Array):
 	var last_3_seq = seq.slice(seq.size() - 3, seq.size())
-	# 🔥 PROIETTILE
+	# PROIETTILE
 	if last_3_seq == ["light_attack", "heavy_attack", "interact"]:
 		return "projectile"
 	
-	# 🌊 ONDA
-	if last_3_seq == ["expansion", "impulse", "expansion"]:
-		return "wave"
-	
-	# ⬆️ LAUNCHER
-	if last_3_seq == ["stability", "impulse"]:
-		return "launcher"
-	
-	# ⚡ DASH ATTACK
-	if last_3_seq == ["connection", "impulse"]:
-		return "dash_attack"
+	# PALM STRIKE
+	if last_3_seq == ["heavy_attack", "interact", "light_attack"]:
+		return "palm_strike"
+	#
+	## 🌊 ONDA
+	#if last_3_seq == ["expansion", "impulse", "expansion"]:
+		#return "wave"
+	#
+	## ⬆️ LAUNCHER
+	#if last_3_seq == ["stability", "impulse"]:
+		#return "launcher"
+	#
+	## ⚡ DASH ATTACK
+	#if last_3_seq == ["connection", "impulse"]:
+		#return "dash_attack"
 	
 	return null
 
@@ -186,17 +190,23 @@ func execute_ability(ability: String):
 				
 				state_machine.change_state("CastState")
 				input_sequence.clear()
+				
+		"palm_strike":
+			if player.chakra >= 100:
+				player.add_chakra(-100)
+				player.attack_type = "palm_strike"
+				state_machine.change_state("AttackState")
 		
-		"wave":
-			if player.chakra >= 80:
-				player.chakra -= 80
-				spawn_wave()
-		
-		"launcher":
-			player.do_launcher_attack()
-		
-		"dash_attack":
-			player.do_dash_attack()
+		#"wave":
+			#if player.chakra >= 80:
+				#player.chakra -= 80
+				#spawn_wave()
+		#
+		#"launcher":
+			#player.do_launcher_attack()
+		#
+		#"dash_attack":
+			#player.do_dash_attack()
 	return
 
 # -------------------------------------------------

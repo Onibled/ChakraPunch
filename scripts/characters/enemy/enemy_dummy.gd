@@ -14,6 +14,8 @@ extends EnemyBase
 # ---------------------------------------------------------
 
 func _physics_process(delta):
+	broke_wall_this_frame = false
+	
 	handle_gravity(delta)
 	
 	# Reset quando tocca terra
@@ -27,10 +29,6 @@ func _physics_process(delta):
 	elif is_knockback:
 		handle_knockback(delta)
 	
-	# Collisioni avanzate
-	handle_wall_collision()
-	handle_ground_collision()
-	
 	apply_friction(delta)
 	
 	if abs(velocity.x) < 5:
@@ -41,26 +39,11 @@ func _physics_process(delta):
 	var last_velocity_x = velocity.x
 	
 	move_and_slide()
-
-	# -------------------------
-	# WALL SPLAT CHECK
-	# -------------------------
-	if is_on_wall():
-		var wall_dir = get_wall_normal().x
-		
-		# stai andando verso il muro?
-		if sign(last_velocity_x) == -wall_dir:
-			get_node("StateMachine").change_state("WallSplatState")
-			return
-			
-		for i in range(get_slide_collision_count()):
-			var collision = get_slide_collision(i)
-			var collider = collision.get_collider()
-			
-			if collider and collider.has_method("on_body_slam"):
-				var impact_force = abs(velocity.x)
-				collider.on_body_slam(self, impact_force)
-		
+	
+	handle_wall_collision()
+	handle_ground_collision()
+	check_breakable_wall_collision(last_velocity_x)
+	return
 
 func spawn_chakra(dmg, kb: Vector2):
 	var dir = sign(kb.x)
@@ -85,6 +68,9 @@ func spawn_chakra(dmg, kb: Vector2):
 func handle_knockback(delta):
 	stun_timer -= delta
 	
+	if broke_wall_this_frame:
+		return
+	
 	# Wall splat check
 	if is_on_wall() and abs(velocity.x) > 200:
 		get_node("StateMachine").change_state("WallSplatState")
@@ -97,8 +83,7 @@ func handle_knockback(delta):
 	# Anti infinite combo
 	if juggle_count > juggle_limit:
 		velocity.y = max(velocity.y, 200)
-		
-	
+	return
 
 # ---------------------------------------------------------
 # 🧱 WALL SPLAT
@@ -126,6 +111,9 @@ func handle_wall_splat(delta):
 
 ## Rimbalzo su muro (air combo)
 func handle_wall_collision():
+	if broke_wall_this_frame:
+		return
+	
 	if is_on_wall() and is_airborne:
 		velocity.x *= -0.6
 		velocity.y *= 0.8

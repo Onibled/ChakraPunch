@@ -21,7 +21,8 @@ signal died
 #region MOVEMENT SETTINGS
 
 ## Direzione attuale del player (1 = destra, -1 = sinistra)
-var facing_direction := 1
+var facing_direction: int = 1
+var input_direction: int = 0
 
 @export var max_speed := 220
 @export var acceleration := 1200
@@ -49,11 +50,13 @@ var jump_buffer_timer := 0.0
 #endregion
 
 #region COLLISIONS
+
 var saved_collision_position
 var saved_collision_scale
 
 var saved_hurtbox_position
 var saved_hurtbox_scale
+
 #endregion
 
 #region DASH
@@ -67,6 +70,7 @@ var dash_direction := 0
 
 @export var dash_cancel_enabled := true
 @export var dash_cancel_requires_hit := false
+@onready var ceiling_check: RayCast2D = $Visuals/CeilingCheck
 
 #endregion
 
@@ -82,16 +86,18 @@ var iframe_timer := 0.0
 
 #region WALL
 
-## Parametri wall interaction
 @export var wall_slide_speed := 60.0
-@export var wall_jump_x := 300
-@export var wall_jump_y := -420
-
+@export var wall_jump_x := 350
+@export var wall_jump_y := -260
 var is_wall_sliding := false
 
 #endregion
 
 #region LEDGE
+
+## Ledge detection
+@onready var ledge_check_top: RayCast2D = $Visuals/LedgeCheckTop
+@onready var ledge_check_bottom: RayCast2D = $Visuals/LedgeCheckBottom
 
 ## Stato aggrappamento bordo
 var is_on_ledge := false
@@ -100,6 +106,13 @@ var ledge_position := Vector2.ZERO
 ## Cooldown per evitare riaggancio immediato
 var ledge_cooldown := 0.2
 var ledge_timer := 0.0
+
+@onready var vault_check_low: RayCast2D = $Visuals/VaultCheckLow
+@onready var vault_check_high: RayCast2D = $Visuals/VaultCheckHigh
+@onready var vault_check_forward: RayCast2D = $Visuals/VaultCheckForward
+
+var vault_cooldown := 0.2
+var vault_timer := 0.0
 
 #endregion
 
@@ -123,18 +136,21 @@ var combo_data = {
 	"light_1": {
 		"anim": "attack_light",
 		"damage": 10,
-		"kb": Vector2(5, -100),
-		"next": ["light_2", "heavy"],
+		"horizontal_force": CombatData.ForceLevel.LIGHT,
+		"vertical_force": CombatData.ForceLevel.LIGHT,
+		"next": ["light_2"],
 		"dash_cancel": true,
 		"confirm_start": 0.08,
-		"confirm_end": 0.22
+		"confirm_end": 0.22,
+		"reaction": "stagger"
 	},
 	
 	"light_2": {
 		"anim": "attack_light_2",
 		"damage": 12,
-		"kb": Vector2(5, -120),
-		"next": ["heavy"],
+		"horizontal_force": CombatData.ForceLevel.LIGHT,
+		"vertical_force": CombatData.ForceLevel.LIGHT,
+		"next": ["light_1"],
 		"dash_cancel": true,
 		"confirm_start": 0.08,
 		"confirm_end": 0.22,
@@ -144,7 +160,8 @@ var combo_data = {
 	"heavy": {
 		"anim": "attack_heavy",
 		"damage": 20,
-		"kb": Vector2(200, -300),
+		"horizontal_force": CombatData.ForceLevel.MEDIUM,
+		"vertical_force": CombatData.ForceLevel.MEDIUM,
 		"next": [],
 		"dash_cancel": false,
 		"confirm_start": 0.00,
@@ -155,8 +172,21 @@ var combo_data = {
 	"launcher": {
 		"anim": "launcher",
 		"damage": 15,
-		"kb": Vector2(0, -500),
-		"next": ["light_1"],  # air follow
+		"horizontal_force": CombatData.ForceLevel.NONE,
+		"vertical_force": CombatData.ForceLevel.STRONG,
+		"next": [],  # air follow
+		"dash_cancel": true,
+		"confirm_start": 0.08,
+		"confirm_end": 0.22,
+		"reaction": "launch"
+	},
+	
+	"palm_strike": {
+		"anim": "palm_strike",
+		"damage": 15,
+		"horizontal_force": CombatData.ForceLevel.STRONG,
+		"vertical_force": CombatData.ForceLevel.MEDIUM,
+		"next": [],  # air follow
 		"dash_cancel": true,
 		"confirm_start": 0.08,
 		"confirm_end": 0.22,
@@ -193,6 +223,8 @@ var cast_data := {}
 
 #endregion
 
+var enemy_overlap_count := 0
+
 # ---------------------------------------------------------
 # 🔗 NODE REFERENCES
 # ---------------------------------------------------------
@@ -207,10 +239,6 @@ var cast_data := {}
 @onready var collision_box: CollisionShape2D = $CollisionBox
 @onready var hurtbox: Area2D = $Visuals/Hurtbox
 @onready var hitbox: Area2D = $Visuals/Hitbox
-
-## Ledge detection
-@onready var ledge_check_top: RayCast2D = $Visuals/LedgeCheckTop
-@onready var ledge_check_bottom: RayCast2D = $Visuals/LedgeCheckBottom
 
 ## Input buffer (sistema esterno)
 @onready var input_buffer = InputBuffer.new()
@@ -260,7 +288,9 @@ func handle_movement(delta):
 	
 	var accel = acceleration if is_on_floor() else air_acceleration
 	
-	var speed_mult = meditate_speed_multiplier if meditating else 1.0
+	var speed_mult = 1.0
+	if meditating || enemy_overlap_count > 0:
+		speed_mult = meditate_speed_multiplier
 	
 	# Cambio direzione più rapido
 	if dir != 0 and sign(velocity.x) != sign(dir):
@@ -306,12 +336,19 @@ func on_dash_finished():
 	return
 	
 func end_dash():
-	if not is_dashing:
+	if not is_dashing || not can_stand_up():
 		return
 		
+	if not can_stand_up():
+		state_machine.change_state("DashState")
+		return
+	
 	is_dashing = false
 	restore_collision_state()
 	return
+	
+func can_stand_up() -> bool:
+	return not ceiling_check.is_colliding()
 	
 func can_dash() -> bool:
 	return dash_cooldown_timer <= 0 and not is_dashing
@@ -426,6 +463,8 @@ func handle_timers(delta):
 	return
 	
 func handle_input_buffer():
+	input_direction = Input.get_axis("ui_left", "ui_right")
+	
 	if Input.is_action_just_pressed("light_attack"):
 		input_buffer.add_input("light_attack")
 
@@ -509,13 +548,24 @@ func handle_attacks() -> void:
 
 ## Controllo se il player può agganciarsi
 func check_ledge():
-	if is_on_ledge || is_on_floor() || ledge_timer > 0:
+
+	if is_on_ledge or is_on_floor() or ledge_timer > 0:
 		return
+	
+	# deve stare cadendo
+	#if velocity.y <= 50:
+		#return
 	
 	var top = ledge_check_top.is_colliding()
 	var bottom = ledge_check_bottom.is_colliding()
 	
-	if not top and bottom and velocity.y > 50:
+	# direzione del muro
+	var wall_dir = facing_direction
+	
+	# il player deve andare verso il muro
+	var moving_towards_ledge = sign(input_direction) == wall_dir
+	
+	if not top and bottom and moving_towards_ledge:
 		grab_ledge()
 	return
 
@@ -544,7 +594,7 @@ func climb_ledge():
 	is_on_ledge = false
 	
 	# teletrasporto sopra il bordo
-	global_position.y -= 30
+	global_position.y -= 40
 	global_position.x += 10 * facing_direction
 	return
 
@@ -561,6 +611,19 @@ func jump_from_ledge():
 	ledge_timer = ledge_cooldown
 	return
 	
+func can_vault():
+
+	return (
+		vault_check_low.is_colliding()
+		and not vault_check_high.is_colliding()
+		and vault_check_forward.is_colliding()
+	)
+	
+func check_vault():
+	if can_vault():
+		state_machine.change_state("VaultState")
+	return
+
 # -------------------
 # COMBAT
 # -------------------
@@ -729,3 +792,13 @@ func _on_died():
 	# esempio con checkpoint
 	#Utility.change_scene(load(GameState.last_scene))
 	return
+	
+func _on_enemy_overlap_area_body_entered(body):
+
+	if body is EnemyBase:
+		enemy_overlap_count += 1
+		
+func _on_enemy_overlap_area_body_exited(body):
+
+	if body is EnemyBase:
+		enemy_overlap_count = max(enemy_overlap_count - 1, 0)

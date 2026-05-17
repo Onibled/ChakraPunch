@@ -1,33 +1,34 @@
 extends CharacterBody2D
 class_name EnemyBase
 
-@export var max_health := 100
+@export var max_health: int = 100
 
 @onready var health_component: HealthComponent = $HealthComponent
-@onready var state_machine = $StateMachine
+@onready var state_machine: EnemyStateMachine = $StateMachine
 
 
-@export var gravity := 820
+@export var gravity: int = 820
 
 # ---------------------------------------------------------
 # 🎯 STATI COMBAT
 # ---------------------------------------------------------
 
-var is_knockback := false
-var is_wall_splat := false
-var is_airborne := false
+var is_knockback: bool = false
+var is_wall_splat: bool = false
+var broke_wall_this_frame: bool = false
+var is_airborne: bool = false
 
-var stun_timer := 0.0
+var stun_timer: float = 0.0
 
-var stagger_resistance := 10
+var stagger_resistance: int = 10
 
 # ---------------------------------------------------------
 # 💥 JUGGLE
 # ---------------------------------------------------------
 
-var juggle_count := 0
-var juggle_limit := 4
-var air_time := 0.0
+var juggle_count: int = 0
+var juggle_limit: int = 4
+var air_time: float = 0.0
 
 
 # ---------------------------------------------------------
@@ -98,9 +99,7 @@ func update_knockback(delta):
 	if stun_timer <= 0:
 		is_knockback = false
 
-# ---------------------------------------------------------
-# 🧱 WALL SPLAT
-# ---------------------------------------------------------
+# 🧱 Collisions
 
 func try_wall_splat(last_velocity_x):
 
@@ -111,6 +110,79 @@ func try_wall_splat(last_velocity_x):
 	
 	if sign(last_velocity_x) == -wall_dir:
 		state_machine.change_state("WallSplatState")
+	return
+
+func check_breakable_collision(last_velocity_x):
+
+	for i in range(get_slide_collision_count()):
+
+		var collision = get_slide_collision(i)
+
+		var collider = collision.get_collider()
+
+		if collider == null:
+			continue
+
+		# deve avere metodo
+		if collider.has_method("on_body_slam"):
+
+			# stavi andando verso il muro?
+			var wall_normal = collision.get_normal()
+
+			if sign(last_velocity_x) == -sign(wall_normal.x):
+
+				var impact_force = abs(last_velocity_x)
+
+				collider.on_body_slam(self, impact_force)
+	return
+	
+func check_breakable_wall_collision(last_velocity_x: int):
+	if state_machine.current_state.name == "WallSplatState":
+		return
+		
+	if not is_knockback:
+		return
+
+	for i in range(get_slide_collision_count()):
+
+		var collision = get_slide_collision(i)
+
+		var collider = collision.get_collider()
+
+		if collider == null:
+			continue
+
+		# muro rompibile
+		if collider.has_method("on_body_slam"):
+
+			var wall_broken = collider.on_body_slam(
+				self,
+				abs(velocity.x)
+			)
+
+			# --------------------------------
+			# 💥 MURO ROTTO
+			# --------------------------------
+			if wall_broken:
+				
+				broke_wall_this_frame = true
+
+				# mantiene momentum
+				velocity.x = sign(last_velocity_x) * max(abs(last_velocity_x), 200)
+
+				# push oltre muro
+				global_position.x += sign(velocity.x) * 16
+
+				return
+
+			# --------------------------------
+			# 🧱 WALL SPLAT
+			# --------------------------------
+			else:
+
+				get_node("StateMachine").change_state("WallSplatState")
+				return
+	return
 
 # ---------------------------------------------------------
 # ☠️ DEATH

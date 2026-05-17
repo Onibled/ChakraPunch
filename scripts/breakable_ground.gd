@@ -1,4 +1,4 @@
-extends Node2D
+extends StaticBody2D
 
 # -------------------------------------------------
 # ⚙️ SETTINGS
@@ -172,16 +172,18 @@ func on_body_slam(body, force: float):
 	if is_broken:
 		return
 	
-	# soglia minima per evitare micro urti
-	if force < 150:
-		return
+	## soglia minima per evitare micro urti
+	#if force < 150:
+		#return
 	
 	# ----------------------------------------
 	# 💥 TRATTA COME HEAVY HIT
 	# ----------------------------------------
-	handle_heavy_hit()
+	handle_light_hit()
 	
 	# oppure se vuoi scalare:
 	# light_hits_left -= int(force / 100)
 	
-	check_break()	
+	check_break()
+	
+	return is_broken

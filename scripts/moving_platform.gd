@@ -34,6 +34,10 @@ var last_position: Vector2
 func _ready():
 	last_position = global_position
 	
+	# aggiunge la posizione iniziale solo se manca
+	if points.is_empty() or points[0] != global_position:
+		points.insert(0, global_position)
+	
 	if points.is_empty():
 		push_error("MovingPlatform: nessun punto impostato")
 		set_physics_process(false)
@@ -107,9 +111,11 @@ func advance_target():
 		
 		LoopMode.STOP:
 			if current_index < points.size() - 1:
-				current_index += 1
+				current_index += direction
 			else:
 				active = false
+				direction = -1
+				current_index = points.size() - 1
 		
 		LoopMode.LOOP:
 			current_index += 1
@@ -136,10 +142,19 @@ func activate():
 	
 	if current_index >= points.size():
 		current_index = 0
+	return
 
 func deactivate():
 	active = false
 	velocity = Vector2.ZERO
+	return
+	
+func toggle():
+	if active:
+		deactivate()
+	else:
+		activate()
+	return
 
 # =========================================================
 # 🎨 DEBUG DRAW

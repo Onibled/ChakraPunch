@@ -6,6 +6,10 @@ func enter():
 	return
 
 func update(delta):
+	player.climb_ledge()
+	state_machine.change_state("MoveState")
+	return
+	
 	player.velocity = Vector2.ZERO
 	
 	if player.input_buffer.consume("jump"):

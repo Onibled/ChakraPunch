@@ -23,10 +23,8 @@ func enter():
 	# 🎯 SELEZIONE ATTACCO (DATA DRIVEN)
 	# -------------------------------------------------
 	
-	if player.attack_type == "launcher":
-		current_attack_data = player.combo_data["launcher"]
-	elif player.attack_type == "heavy":
-		current_attack_data = player.combo_data["heavy"]
+	if player.attack_type != "":
+		current_attack_data = player.combo_data[player.attack_type]
 	else:
 		current_attack_data = player.combo_data[player.current_attack]
 	
@@ -37,7 +35,9 @@ func enter():
 	# -------------------------------------------------
 	
 	player.hitbox.damage = current_attack_data["damage"]
-	player.hitbox.knockback = current_attack_data["kb"]
+	player.hitbox.horizontal_force = current_attack_data.get("horizontal_force", CombatData.ForceLevel.NONE)
+
+	player.hitbox.vertical_force = current_attack_data.get("vertical_force",CombatData.ForceLevel.NONE)
 	player.hitbox.attack_data = current_attack_data
 	
 	# confirm window data-driven

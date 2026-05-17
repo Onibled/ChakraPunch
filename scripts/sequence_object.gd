@@ -168,11 +168,15 @@ func _wrong():
 func _completed():
 	print("Sequenza completata!")
 	activate_targets()
-	#_reset()
+	_reset_only_index()
 
 # -------------------------------------------------
 # 🔄 RESET
 # -------------------------------------------------
+
+func _reset_only_index():
+	current_index = 0
+	return
 
 func _reset():
 	current_index = 0

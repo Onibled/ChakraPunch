@@ -3,7 +3,8 @@ extends Area2D
 @onready var hit_sound: AudioStreamPlayer2D = $HitSound
 
 @export var damage := 10
-@export var knockback := Vector2.ZERO
+var horizontal_force := CombatData.ForceLevel.NONE
+var vertical_force := CombatData.ForceLevel.NONE
 
 # 🔥 NUOVO: dati completi dell’attacco
 var attack_data := {}
@@ -47,7 +48,7 @@ func _on_area_entered(area):
 	# 💥 KNOCKBACK (DATA DRIVEN)
 	# -------------------------------------------------
 	
-	var kb = knockback
+	var kb = Vector2(CombatData.get_horizontal_force(horizontal_force), CombatData.get_vertical_force(vertical_force))
 	kb.x *= dir
 	
 	# 🎲 micro variazione direzione

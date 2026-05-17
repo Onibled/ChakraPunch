@@ -26,6 +26,7 @@
 [ext_resource type="Script" uid="uid://cm4wmlribfcra" path="res://scripts/characters/player/dash_state.gd" id="14_f1ej7"]
 [ext_resource type="Script" uid="uid://bajqa35okc27t" path="res://scripts/characters/player/meditate_state.gd" id="21_i4ail"]
 [ext_resource type="Script" uid="uid://be0ef1her0kwa" path="res://scripts/characters/player/cast_state.gd" id="22_a38lo"]
+[ext_resource type="Script" uid="uid://bb4gvrx1trd5g" path="res://scripts/characters/player/vault_state.gd" id="22_j8rto"]
 [ext_resource type="PackedScene" uid="uid://dlg60gv24tjgc" path="res://scenes/characters/health_component.tscn" id="23_3hnlq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g2els"]
@@ -293,6 +294,53 @@ tracks/0/keys = {
 "values": [ExtResource("7_l71n6")]
 }
 
+[sub_resource type="Animation" id="Animation_b4gk5"]
+resource_name = "palm_strike"
+length = 0.2
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hitbox")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.06666667, 0.16666667),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"start_hit"
+}, {
+"args": [],
+"method": &"stop_hit"
+}]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [null],
+"method": &"_on_animation_player_animation_finished"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:texture")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("4_i4ail")]
+}
+
 [sub_resource type="Animation" id="Animation_4r5pv"]
 resource_name = "run"
 tracks/0/type = "value"
@@ -366,6 +414,7 @@ _data = {
 &"launcher": SubResource("Animation_i4ail"),
 &"ledge": SubResource("Animation_fulsm"),
 &"meditate": SubResource("Animation_31cv2"),
+&"palm_strike": SubResource("Animation_b4gk5"),
 &"run": SubResource("Animation_4r5pv"),
 &"slide": SubResource("Animation_j8rto"),
 &"wall": SubResource("Animation_60mlk")
@@ -373,6 +422,9 @@ _data = {
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qhqgy"]
 size = Vector2(9, 42)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j8rto"]
+size = Vector2(15, 42)
 
 [node name="Player" type="CharacterBody2D" unique_id=1445301226]
 collision_layer = 2
@@ -394,12 +446,29 @@ texture = ExtResource("2_f1ej7")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Visuals" unique_id=890638506]
 libraries/ = SubResource("AnimationLibrary_i4ail")
 
+[node name="CeilingCheck" type="RayCast2D" parent="Visuals" unique_id=349185523]
+position = Vector2(0, 6)
+target_position = Vector2(0, -17)
+
 [node name="LedgeCheckTop" type="RayCast2D" parent="Visuals" unique_id=1628243787]
-position = Vector2(0, -16)
+position = Vector2(0, -11)
 target_position = Vector2(10, 0)
 
 [node name="LedgeCheckBottom" type="RayCast2D" parent="Visuals" unique_id=896507366]
+position = Vector2(0, 4)
 target_position = Vector2(10, 0)
+
+[node name="VaultCheckHigh" type="RayCast2D" parent="Visuals" unique_id=1980375646]
+position = Vector2(0, -8)
+target_position = Vector2(10, 0)
+
+[node name="VaultCheckLow" type="RayCast2D" parent="Visuals" unique_id=2114074869]
+position = Vector2(0, 23)
+target_position = Vector2(10, 0)
+
+[node name="VaultCheckForward" type="RayCast2D" parent="Visuals" unique_id=1221597003]
+position = Vector2(6, 20)
+target_position = Vector2(0, 10)
 
 [node name="Hitbox" parent="Visuals" unique_id=1427040964 instance=ExtResource("10_6nfx3")]
 
@@ -428,6 +497,9 @@ script = ExtResource("5_y4r1p")
 [node name="LedgeState" type="Node" parent="StateMachine" unique_id=264563691]
 script = ExtResource("6_d2wvv")
 
+[node name="VaultState" type="Node" parent="StateMachine" unique_id=2005928225]
+script = ExtResource("22_j8rto")
+
 [node name="WallState" type="Node" parent="StateMachine" unique_id=1047163622]
 script = ExtResource("7_3v2ag")
 
@@ -451,3 +523,13 @@ script = ExtResource("22_a38lo")
 
 [node name="Symbol" type="Sprite2D" parent="." unique_id=539879698]
 position = Vector2(0, -26)
+
+[node name="EnemyOverlapArea" type="Area2D" parent="." unique_id=387978758]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyOverlapArea" unique_id=587237697]
+position = Vector2(-1.5, 11)
+shape = SubResource("RectangleShape2D_j8rto")
+
+[connection signal="body_entered" from="EnemyOverlapArea" to="." method="_on_enemy_overlap_area_body_entered"]
+[connection signal="body_exited" from="EnemyOverlapArea" to="." method="_on_enemy_overlap_area_body_exited"]

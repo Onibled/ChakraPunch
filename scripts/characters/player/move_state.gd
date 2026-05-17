@@ -34,6 +34,10 @@ func update(delta):
 	if player.is_on_ledge:
 		state_machine.change_state("LedgeState")
 		return
+		
+	if player.can_vault():
+		state_machine.change_state("VaultState")
+		return
 
 	if player.is_on_wall() and not player.is_on_floor():
 		state_machine.change_state("WallState")

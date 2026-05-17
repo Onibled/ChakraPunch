@@ -1,4 +1,5 @@
 extends Node
+class_name EnemyStateMachine
 
 var current_state
 var states = {}

@@ -21,7 +21,7 @@ var velocity := Vector2.ZERO
 var look_ahead := Vector2.ZERO
 
 # lock system
-var is_locked := false
+@export var is_locked := false
 var locked_position := Vector2.ZERO
 
 # =========================================================

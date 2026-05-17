@@ -20,6 +20,7 @@ config/icon="res://sprites/icon.svg"
 Utility="*uid://5fqm3v11opnf"
 GameState="*uid://bmp8owfeiewwj"
 SceneTransitionManager="*uid://d5on8225q4ru"
+CombatData="*uid://ctaiaheh7oyix"
 
 [input]
 

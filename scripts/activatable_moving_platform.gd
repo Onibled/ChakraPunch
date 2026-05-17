@@ -30,3 +30,6 @@ func _ready():
 func activate():
 	moving_platform.activate()
 	return
+	
+func is_actived_now() -> bool: 
+	return moving_platform.active
